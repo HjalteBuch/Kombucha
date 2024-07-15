@@ -1,0 +1,6 @@
+@Kombucha_HostAddress = http://localhost:5259
+
+GET {{Kombucha_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
