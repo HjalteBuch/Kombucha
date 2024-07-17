@@ -8,4 +8,9 @@ public class KombuchaContext : DbContext {
 
     public DbSet<Batch> Batches { get; set; } = null!;
     public DbSet<Bottle> Bottles { get; set; } = null!;
+
+    protected override void OnModelCreating(ModelBuilder modelBuilder) {
+        modelBuilder.Entity<Bottle>()
+            .HasOne(b => b.Batch);
+    }
 }

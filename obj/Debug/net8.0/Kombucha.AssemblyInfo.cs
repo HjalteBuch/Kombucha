@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("Kombucha")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+7806c740b9327077115113390bb0c2dcd5b9d135")]
 [assembly: System.Reflection.AssemblyProductAttribute("Kombucha")]
 [assembly: System.Reflection.AssemblyTitleAttribute("Kombucha")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

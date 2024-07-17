@@ -33,3 +33,4 @@
 /home/hjalte/Projects/kombucha/Kombucha/obj/Debug/net8.0/Kombucha.pdb
 /home/hjalte/Projects/kombucha/Kombucha/obj/Debug/net8.0/Kombucha.genruntimeconfig.cache
 /home/hjalte/Projects/kombucha/Kombucha/obj/Debug/net8.0/ref/Kombucha.dll
+/home/hjalte/Projects/kombucha/Kombucha/obj/Debug/net8.0/Kombucha.sourcelink.json

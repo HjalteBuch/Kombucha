@@ -6,6 +6,4 @@ public class Batch {
     public int Sugar { get; set; }
     public string Tea { get; set; }
     public string Description { get; set; }
-
-    public virtual List<Bottle>? Bottles { get; set; }
 }
