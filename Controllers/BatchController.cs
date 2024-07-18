@@ -37,6 +37,9 @@ public class BatchController : ControllerBase
 
     [HttpPost]
     public async Task<ActionResult<Batch>> PostBatch(Batch batch) {
+        if (!ModelState.IsValid) {
+            return BadRequest(ModelState);
+        }
         _context.Batches.Add(batch);
         await _context.SaveChangesAsync();
 
