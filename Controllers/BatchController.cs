@@ -18,9 +18,21 @@ public class BatchController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<Batch>>> GetBatches()
+    public async Task<ActionResult<IEnumerable<BatchDTO>>> GetBatches()
     {
-        return await _context.Batches.ToListAsync();
+        //var batches = await _context.Batches.ToListAsync();
+        var batches = from b in _context.Batches
+            select new BatchDTO() {
+                Id = b.Id,
+                StartTime = b.StartTime,
+                SugarType = b.Sugar.Name,
+                GramsOfSugar = b.GramsOfSugar,
+                TeaType = b.Tea.Name + ", " + b.Tea.Brand,
+                GramsOfTea = b.GramsOfTea,
+                SteepMinutes = b.SteepMinutes,
+                Description = b.Description,
+            };
+        return await batches.ToListAsync();
     }
 
     [HttpGet("{id}")]
