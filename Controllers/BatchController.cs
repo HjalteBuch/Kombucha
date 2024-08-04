@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Kombucha.Models;
 using Microsoft.EntityFrameworkCore;
+using System.Text.Json;
 
 namespace Kombucha.Controllers;
 
@@ -48,10 +49,39 @@ public class BatchController : ControllerBase
     }
 
     [HttpPost]
-    public async Task<ActionResult<Batch>> PostBatch(Batch batch) {
+    public async Task<ActionResult<Batch>> PostBatch(BatchPostDTO batchPost) {
         if (!ModelState.IsValid) {
             return BadRequest(ModelState);
         }
+
+        bool error = false;
+
+        var sugarExists = await _context.Sugars.AnyAsync(s => s.Id == batchPost.SugarId);
+        if (!sugarExists) {
+            ModelState.AddModelError("SugarId", "No sugar has the id provided as the sugar id");
+            error = true;
+        }
+
+        var TeaExists = await _context.Teas.AnyAsync(t => t.Id == batchPost.TeaId);
+        if (!TeaExists) {
+            ModelState.AddModelError("TeaId", "No tea has the id provided as the tea id");
+            error = true;
+        }
+
+        if (error) {
+            return BadRequest(ModelState);
+        }
+
+        var batch = new Batch {
+            StartTime = batchPost.StartTime,
+            GramsOfSugar = batchPost.GramsOfSugar,
+            GramsOfTea = batchPost.GramsOfTea,
+            SteepMinutes = batchPost.SteepMinutes,
+            Description = batchPost.Description,
+            SugarId = batchPost.SugarId,
+            TeaId = batchPost.TeaId
+        };
+
         _context.Batches.Add(batch);
         await _context.SaveChangesAsync();
 

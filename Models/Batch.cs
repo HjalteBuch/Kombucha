@@ -24,3 +24,13 @@ public class BatchDTO {
     public int SteepMinutes { get; set; }
     public string Description { get; set; }
 }
+
+public class BatchPostDTO {
+    public DateOnly StartTime { get; set; }
+    public long SugarId { get; set; }
+    public int GramsOfSugar { get; set; }
+    public long TeaId { get; set; }
+    public int GramsOfTea { get; set; }
+    public int SteepMinutes { get; set; }
+    public string Description { get; set; }
+}
