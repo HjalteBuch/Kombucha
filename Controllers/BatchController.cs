@@ -37,15 +37,41 @@ public class BatchController : ControllerBase
     }
 
     [HttpGet("{id}")]
-    public async Task<ActionResult<Batch>> GetBatch(long id)
-    {
-        var batch = await _context.Batches.FindAsync(id);
+    public async Task<ActionResult<BatchDTO>> GetBatch(long id) {
+        var batch = await _context.Batches
+            .Include(b => b.Sugar)
+            .Include(b => b.Tea)
+            .Where(b => b.Id == id)
+            .FirstAsync();
 
         if (batch == null) {
             return NotFound();
         }
 
-        return batch;
+        var batchDTO = new BatchDTO {
+                Id = batch.Id,
+                StartTime = batch.StartTime,
+                SugarType = batch.Sugar.Name,
+                GramsOfSugar = batch.GramsOfSugar,
+                TeaType = batch.Tea.Name + ", " + batch.Tea.Brand,
+                GramsOfTea = batch.GramsOfTea,
+                SteepMinutes = batch.SteepMinutes,
+                Description = batch.Description,
+        };
+
+        return batchDTO;
+    }
+
+    [HttpDelete("{id}")]
+    public async Task<ActionResult> DeleteBatch(long id) {
+        var batch = await _context.Batches.FindAsync(id);
+        if (batch == null) {
+            return NotFound("Batch not found with the provided id");
+        }
+        _context.Remove(batch);
+        await _context.SaveChangesAsync();
+
+        return NoContent();
     }
 
     [HttpPost]

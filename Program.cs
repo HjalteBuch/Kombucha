@@ -6,7 +6,7 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 
 builder.Services.AddControllers();
-builder.Services.AddDbContext<KombuchaContext>(opt => opt.UseInMemoryDatabase("KombuchaDB"));
+builder.Services.AddDbContext<KombuchaContext>();
 
 builder.Services.AddCors(options => {
     options.AddPolicy("AllowReactApp", builder => {
