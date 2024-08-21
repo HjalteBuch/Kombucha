@@ -13,6 +13,8 @@ public class Bottle {
 
 public class BottleCreateDTO {
     public DateOnly TapDate { get; set; }
-    public Ingredient[] Ingredients { get; set; }
+    public int DaysOfFermentation { get; set; }
     public long BatchId { get; set; }
+    public Ingredient[] Ingredients { get; set; }
+    public string Description { get; set; }
 }

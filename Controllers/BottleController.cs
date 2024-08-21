@@ -53,8 +53,8 @@ public class BottleController : ControllerBase {
             BatchId = bottleDto.BatchId
         };
 
-        _context.Bottles.Add(bottle);
-        await _context.SaveChangesAsync();
+        //_context.Bottles.Add(bottle);
+        //await _context.SaveChangesAsync();
 
         return CreatedAtAction(nameof(GetBottle), new { id = bottle.Id }, bottle);
     }
