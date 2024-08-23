@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Kombucha.Models;
 using Microsoft.EntityFrameworkCore;
+using System.Text.Json;
 
 namespace Kombucha.Controllers;
 
@@ -49,13 +50,35 @@ public class BottleController : ControllerBase {
 
         var bottle = new Bottle {
             TapDate = bottleDto.TapDate,
-            Ingredients = bottleDto.Ingredients,
-            BatchId = bottleDto.BatchId
+            DaysOfFermentation = GetDaysOfFermentationFromDTO(bottleDto.DaysOfFermentation),
+            Ingredients = await GetIngredientsFromDTO(bottleDto.Ingredients),
+            Description = bottleDto.Description,
+            BatchId = bottleDto.BatchId,
         };
 
-        //_context.Bottles.Add(bottle);
-        //await _context.SaveChangesAsync();
+        Console.WriteLine("bottle: ");
+        Console.WriteLine(JsonSerializer.Serialize(bottle));
+
+        _context.Bottles.Add(bottle);
+        await _context.SaveChangesAsync();
 
         return CreatedAtAction(nameof(GetBottle), new { id = bottle.Id }, bottle);
+    }
+
+    private async Task<List<Ingredient>> GetIngredientsFromDTO(IngredientIncommingDTO[] dtoIngredients)
+    {
+        List<long> selectedIngredientIds = dtoIngredients
+            .Where(dto => dto.Checked)
+            .Select(dto => dto.Value)
+            .ToList();
+
+        return await _context.Ingredients
+            .Where(ingredient => selectedIngredientIds.Contains(ingredient.Id))
+            .ToListAsync();
+    }
+
+    private int? GetDaysOfFermentationFromDTO(int days){
+        if (days == 0) { return null; }
+        return days;
     }
 }
