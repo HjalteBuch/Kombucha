@@ -20,7 +20,7 @@ public class BottleController : ControllerBase {
     [HttpGet]
     public async Task<ActionResult<IEnumerable<Bottle>>> GetBottle()
     {
-        return await _context.Bottles.Include(b => b.Batch).ToListAsync();
+        return await _context.Bottles.Include(b => b.Batch).Include(b => b.Ingredients).ToListAsync();
     }
 
     [HttpGet("ByBatchId/{id}")]
@@ -32,7 +32,7 @@ public class BottleController : ControllerBase {
             return BadRequest(errMsg);
         }
 
-        var bottles = await _context.Bottles.Where(b => b.BatchId == id).ToListAsync();
+        var bottles = await _context.Bottles.Include(bo => bo.Ingredients).Where(b => b.BatchId == id).ToListAsync();
         if (!bottles.Any()) {
             string errMsg = "No bottles from the given Batch ID.";
             _logger.LogInformation(errMsg);
