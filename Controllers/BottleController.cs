@@ -23,6 +23,24 @@ public class BottleController : ControllerBase {
         return await _context.Bottles.Include(b => b.Batch).ToListAsync();
     }
 
+    [HttpGet("ByBatchId/{id}")]
+    public async Task<ActionResult<IEnumerable<Bottle>>> GetBottlesFromBatchId(long id)
+    {
+        if (!_context.Batches.Any(b => b.Id == id)) {
+            string errMsg = "No Batch with the given Batch ID.";
+            _logger.LogError(errMsg);
+            return BadRequest(errMsg);
+        }
+
+        var bottles = await _context.Bottles.Where(b => b.BatchId == id).ToListAsync();
+        if (!bottles.Any()) {
+            string errMsg = "No bottles from the given Batch ID.";
+            _logger.LogInformation(errMsg);
+            return NotFound(errMsg);
+        }
+        return bottles;
+    }
+
     [HttpGet("{id}")]
     public async Task<ActionResult<Bottle>> GetBottle(long id)
     {
