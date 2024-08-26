@@ -53,6 +53,18 @@ public class BottleController : ControllerBase {
         return bottle;
     }
 
+    [HttpDelete("{id}")]
+    public async Task<ActionResult> DeleteBottle(long id) {
+        var bottle = await _context.Bottles.FindAsync(id);
+        if (bottle == null) {
+            return NotFound("Bottle not found with the provided id");
+        }
+        _context.Remove(bottle);
+        await _context.SaveChangesAsync();
+
+        return NoContent();
+    }
+
     [HttpPost]
     public async Task<ActionResult<Bottle>> PostBottle([FromBody] BottleCreateDTO bottleDto) {
         if (!ModelState.IsValid)
