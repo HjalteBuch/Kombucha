@@ -47,17 +47,37 @@ public class BottleController : ControllerBase {
         var bottle = await _context.Bottles.FindAsync(id);
 
         if (bottle == null) {
-            return NotFound();
+            return NotFound("Could not find bottle with given ID.");
         }
 
         return bottle;
+    }
+
+    [HttpPut("UpdateFermentationDays/{id}")]
+    public async Task<ActionResult> UpdateFermentationDays(long id, [FromBody] BottleFermentationDTO dto)
+    {
+        var bottle = await _context.Bottles.FindAsync(id);
+
+        if (bottle == null) {
+            return NotFound("Could not find bottle with given ID.");
+        }
+
+        int fermentationDays = dto.EndOfFermentation.DayNumber - bottle.TapDate.DayNumber;
+        if (fermentationDays <= 0) {
+            return BadRequest("Date can not be the same or earlier date than the TapDate.");
+        }
+
+        bottle.DaysOfFermentation = fermentationDays;
+        await _context.SaveChangesAsync();
+
+        return Ok();
     }
 
     [HttpDelete("{id}")]
     public async Task<ActionResult> DeleteBottle(long id) {
         var bottle = await _context.Bottles.FindAsync(id);
         if (bottle == null) {
-            return NotFound("Bottle not found with the provided id");
+            return NotFound("Could not find bottle with given ID.");
         }
         _context.Remove(bottle);
         await _context.SaveChangesAsync();
@@ -85,9 +105,6 @@ public class BottleController : ControllerBase {
             Description = bottleDto.Description,
             BatchId = bottleDto.BatchId,
         };
-
-        Console.WriteLine("bottle: ");
-        Console.WriteLine(JsonSerializer.Serialize(bottle));
 
         _context.Bottles.Add(bottle);
         await _context.SaveChangesAsync();
