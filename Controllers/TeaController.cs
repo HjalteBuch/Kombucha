@@ -46,4 +46,16 @@ public class TeaController : ControllerBase
 
         return CreatedAtAction(nameof(GetTea), new { id = tea.Id }, tea);
     }
+    
+    [HttpDelete("{id}")]
+    public async Task<ActionResult> DeleteTea(long id) {
+        var tea = await _context.Teas.FindAsync(id);
+        if (tea == null) {
+            return NotFound("Could not find tea with given ID.");
+        }
+        _context.Remove(tea);
+        await _context.SaveChangesAsync();
+
+        return NoContent();
+    }
 }

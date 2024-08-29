@@ -46,4 +46,16 @@ public class SugarController : ControllerBase
 
         return CreatedAtAction(nameof(GetSugar), new { id = sugar.Id }, sugar);
     }
+
+    [HttpDelete("{id}")]
+    public async Task<ActionResult> DeleteSugar(long id) {
+        var sugar = await _context.Teas.FindAsync(id);
+        if (sugar == null) {
+            return NotFound("Could not find sugar with given ID.");
+        }
+        _context.Remove(sugar);
+        await _context.SaveChangesAsync();
+
+        return NoContent();
+    }
 }
