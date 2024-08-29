@@ -20,7 +20,7 @@ public class BottleController : ControllerBase {
     [HttpGet]
     public async Task<ActionResult<IEnumerable<Bottle>>> GetBottle()
     {
-        return await _context.Bottles.Include(b => b.Batch).Include(b => b.Ingredients).ToListAsync();
+        return await _context.Bottles.Include(b => b.Batch).Include(b => b.BottleIngredients).ThenInclude(bi => bi.Ingredient).ToListAsync();
     }
 
     [HttpGet("ByBatchId/{id}")]
@@ -32,7 +32,7 @@ public class BottleController : ControllerBase {
             return BadRequest(errMsg);
         }
 
-        var bottles = await _context.Bottles.Include(bo => bo.Ingredients).Where(b => b.BatchId == id).ToListAsync();
+        var bottles = await _context.Bottles.Include(bo => bo.BottleIngredients).ThenInclude(bi => bi.Ingredient).Where(b => b.BatchId == id).ToListAsync();
         if (!bottles.Any()) {
             string errMsg = "No bottles from the given Batch ID.";
             _logger.LogInformation(errMsg);
@@ -87,6 +87,7 @@ public class BottleController : ControllerBase {
 
     [HttpPost]
     public async Task<ActionResult<Bottle>> PostBottle([FromBody] BottleCreateDTO bottleDto) {
+        return BadRequest("Missing to implement the new ingredients");
         if (!ModelState.IsValid)
         {
             return BadRequest(ModelState);
@@ -101,7 +102,7 @@ public class BottleController : ControllerBase {
         var bottle = new Bottle {
             TapDate = bottleDto.TapDate,
             DaysOfFermentation = GetDaysOfFermentationFromDTO(bottleDto.DaysOfFermentation),
-            Ingredients = await GetIngredientsFromDTO(bottleDto.Ingredients),
+            //Ingredients = await GetIngredientsFromDTO(bottleDto.Ingredients),
             Description = bottleDto.Description,
             BatchId = bottleDto.BatchId,
         };

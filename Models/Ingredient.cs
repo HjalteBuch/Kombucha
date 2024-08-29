@@ -7,7 +7,7 @@ public class Ingredient {
     public string Name { get; set; }
 
     [JsonIgnore]
-    public ICollection<Bottle> Bottles { get; set; }
+    public ICollection<BottleIngredient> BottleIngredients { get; set; }
 }
 
 public class IngredientIncommingDTO
@@ -15,4 +15,5 @@ public class IngredientIncommingDTO
     public string Name { get; set; }
     public bool Checked { get; set; }
     public long Value { get; set; }
+    public int Grams { get; set; }
 }

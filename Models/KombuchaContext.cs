@@ -17,6 +17,7 @@ public class KombuchaContext : DbContext {
     public DbSet<Ingredient> Ingredients { get; set; } = null!;
     public DbSet<Sugar> Sugars { get; set; } = null!;
     public DbSet<Tea> Teas { get; set; } = null!;
+    public DbSet<BottleIngredient> BottleIngredients { get; set; } = null!;
 
     public string DbPath { get; }
 
@@ -25,9 +26,21 @@ public class KombuchaContext : DbContext {
     protected override void OnModelCreating(ModelBuilder modelBuilder) {
         modelBuilder.Entity<Bottle>()
             .HasOne(b => b.Batch);
+
         modelBuilder.Entity<BottleRating>()
             .HasOne(br => br.Bottle)
             .WithMany()
             .HasForeignKey(br => br.BottleId);
+
+        modelBuilder.Entity<BottleIngredient>()
+            .HasKey(bi => new { bi.BottleId, bi.IngredientId });
+        modelBuilder.Entity<BottleIngredient>()
+            .HasOne(bi => bi.Bottle)
+            .WithMany(b => b.BottleIngredients)
+            .HasForeignKey(bi => bi.BottleId);
+        modelBuilder.Entity<BottleIngredient>()
+            .HasOne(bi => bi.Ingredient)
+            .WithMany(i => i.BottleIngredients)
+            .HasForeignKey(bi => bi.IngredientId);
     }
 }

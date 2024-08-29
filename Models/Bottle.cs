@@ -4,7 +4,7 @@ public class Bottle {
     public long Id { get; set; }
     public DateOnly TapDate { get; set; }
     public int? DaysOfFermentation { get; set; }
-    public ICollection<Ingredient> Ingredients { get; set; }
+    public ICollection<BottleIngredient> BottleIngredients { get; set; }
     public string? Description { get; set; }
 
     public long BatchId { get; set; }
