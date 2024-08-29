@@ -98,14 +98,28 @@ public class BottleController : ControllerBase {
             ModelState.AddModelError("BatchId", "No Batch has the id provided as BatchId");
             return BadRequest(ModelState);
         }
+        var ingredients = await GetIngredientsFromDTO(bottleDto.Ingredients);
+        if (ingredients.Count() != bottleDto.Ingredients.Count()) {
+            ModelState.AddModelError("Ingredients", "No valid ingredients provided");
+            return BadRequest(ModelState);
+        }
 
-        var bottle = new Bottle {
+        Bottle bottle = new Bottle {
             TapDate = bottleDto.TapDate,
             DaysOfFermentation = GetDaysOfFermentationFromDTO(bottleDto.DaysOfFermentation),
-            //Ingredients = await GetIngredientsFromDTO(bottleDto.Ingredients),
             Description = bottleDto.Description,
             BatchId = bottleDto.BatchId,
         };
+
+        for (int i = 0; i < ingredients.Count(); i++)
+        {
+            BottleIngredient bottleIngredient = new BottleIngredient {
+                Bottle = bottle,
+               Ingredient = ingredients[i],
+               Grams = bottleDto.Ingredients[i].Grams
+            };
+            bottle.BottleIngredients.Add(bottleIngredient);
+        }
 
         _context.Bottles.Add(bottle);
         await _context.SaveChangesAsync();
