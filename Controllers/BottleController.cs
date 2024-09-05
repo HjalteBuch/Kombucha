@@ -87,7 +87,6 @@ public class BottleController : ControllerBase {
 
     [HttpPost]
     public async Task<ActionResult<Bottle>> PostBottle([FromBody] BottleCreateDTO bottleDto) {
-        return BadRequest("Missing to implement the new ingredients");
         if (!ModelState.IsValid)
         {
             return BadRequest(ModelState);
@@ -98,11 +97,6 @@ public class BottleController : ControllerBase {
             ModelState.AddModelError("BatchId", "No Batch has the id provided as BatchId");
             return BadRequest(ModelState);
         }
-        var ingredients = await GetIngredientsFromDTO(bottleDto.Ingredients);
-        if (ingredients.Count() != bottleDto.Ingredients.Count()) {
-            ModelState.AddModelError("Ingredients", "No valid ingredients provided");
-            return BadRequest(ModelState);
-        }
 
         Bottle bottle = new Bottle {
             TapDate = bottleDto.TapDate,
@@ -111,12 +105,13 @@ public class BottleController : ControllerBase {
             BatchId = bottleDto.BatchId,
         };
 
-        for (int i = 0; i < ingredients.Count(); i++)
+        List<BottleIngredientDTO> bottleIngredients = bottleDto.BottleIngredients;
+        for (int i = 0; i < bottleIngredients.Count(); i++)
         {
             BottleIngredient bottleIngredient = new BottleIngredient {
-                Bottle = bottle,
-               Ingredient = ingredients[i],
-               Grams = bottleDto.Ingredients[i].Grams
+                BottleId = bottle.Id,
+                IngredientId = bottleIngredients[i].Ingredient.Id,
+                Grams = bottleIngredients[i].Grams
             };
             bottle.BottleIngredients.Add(bottleIngredient);
         }

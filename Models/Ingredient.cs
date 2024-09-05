@@ -7,7 +7,7 @@ public class Ingredient {
     public string Name { get; set; }
 
     [JsonIgnore]
-    public ICollection<BottleIngredient> BottleIngredients { get; set; }
+    public ICollection<BottleIngredient> BottleIngredients { get; set; } = new List<BottleIngredient>();
 }
 
 public class IngredientIncommingDTO
