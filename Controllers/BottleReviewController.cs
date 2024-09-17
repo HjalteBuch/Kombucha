@@ -37,7 +37,7 @@ public class BottleReviewController : ControllerBase
         if (!ModelState.IsValid) {
             return BadRequest(ModelState);
         }
-
+        Console.WriteLine(bottleReviewDTO.BottleId);
         var bottleExists = await _context.Bottles.AnyAsync(b => b.Id == bottleReviewDTO.BottleId);
         if (!bottleExists) {
             ModelState.AddModelError("BottleId", "No bottle has the id provided as BottleId");

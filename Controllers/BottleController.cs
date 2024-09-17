@@ -23,6 +23,18 @@ public class BottleController : ControllerBase {
         return await _context.Bottles.Include(b => b.Batch).Include(b => b.BottleIngredients).ThenInclude(bi => bi.Ingredient).ToListAsync();
     }
 
+    [HttpGet("{id}")]
+    public async Task<ActionResult<Bottle>> GetBottle(long id)
+    {
+        var bottle = await _context.Bottles.Include(b => b.BottleIngredients).ThenInclude(bi => bi.Ingredient).Where(b => b.Id == id).FirstOrDefaultAsync();
+
+        if (bottle == null) {
+            return NotFound("Could not find bottle with given ID.");
+        }
+
+        return bottle;
+    }
+
     [HttpGet("ByBatchId/{id}")]
     public async Task<ActionResult<IEnumerable<Bottle>>> GetBottlesFromBatchId(long id)
     {
@@ -41,19 +53,19 @@ public class BottleController : ControllerBase {
         return bottles;
     }
 
-    [HttpGet("{id}")]
-    public async Task<ActionResult<Bottle>> GetBottle(long id)
+    [HttpGet("NewestWithBottleName/{bottleName}")]
+    public async Task<ActionResult<Bottle>> GetNewestBottleWithName(string bottleName)
     {
-        var bottle = await _context.Bottles.FindAsync(id);
-
+        var bottle = await _context.Bottles.Where(b => b.PhysicalBottleName == bottleName).OrderBy(b => b.TapDate).Include(bo => bo.BottleIngredients).ThenInclude(bi => bi.Ingredient).FirstOrDefaultAsync();
         if (bottle == null) {
-            return NotFound("Could not find bottle with given ID.");
+            string errMsg = "No bottles with the bottle name " + bottleName;
+            _logger.LogInformation(errMsg);
+            return NotFound(errMsg);
         }
-
         return bottle;
     }
 
-    [HttpPut("UpdateFermentationDays/{id}")]
+    [HttpPut("{id}/UpdateFermentationDays")]
     public async Task<ActionResult> UpdateFermentationDays(long id, [FromBody] BottleFermentationDTO dto)
     {
         var bottle = await _context.Bottles.FindAsync(id);
@@ -70,7 +82,22 @@ public class BottleController : ControllerBase {
         bottle.DaysOfFermentation = fermentationDays;
         await _context.SaveChangesAsync();
 
-        return Ok();
+        return Ok("Fermentation days have been updated on this bottle entry.");
+    }
+
+    [HttpPut("{id}/UpdatePhysicalBottleName/{name}")]
+    public async Task<ActionResult> UpdateFermentationDays(long id, string name)
+    {
+        var bottle = await _context.Bottles.FindAsync(id);
+
+        if (bottle == null) {
+            return NotFound("Could not find bottle with given ID.");
+        }
+
+        bottle.PhysicalBottleName = name.ToLower();
+        await _context.SaveChangesAsync();
+
+        return Ok("The name of the physical bottle has been updated on this bottle entry.");
     }
 
     [HttpDelete("{id}")]
