@@ -16,7 +16,7 @@ builder.Services.Configure<ForwardedHeadersOptions>(options => {
 
 builder.Services.AddCors(options => {
     options.AddPolicy("AllowReactApp", policy => {
-        policy.WithOrigins("http://kombucha.local")
+        policy.WithOrigins("http://kombucha.local", "http://localhost:3000")
             .AllowAnyHeader()
             .AllowAnyMethod();
     });
@@ -32,7 +32,6 @@ app.UseForwardedHeaders(new ForwardedHeadersOptions
 app.UseAuthentication();
 app.MapGet("/", () => "Hello Kombucha API is up and running!");
 
-// Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.UseDeveloperExceptionPage();

@@ -6,57 +6,57 @@ namespace Kombucha.Controllers;
 
 [ApiController]
 [Route("[controller]")]
-public class BottleRatingController : ControllerBase
+public class BottleReviewController : ControllerBase
 {
     private readonly KombuchaContext _context;
-    private readonly ILogger<BottleRatingController> _logger;
+    private readonly ILogger<BottleReviewController> _logger;
 
-    public BottleRatingController(KombuchaContext context, ILogger<BottleRatingController> logger)
+    public BottleReviewController(KombuchaContext context, ILogger<BottleReviewController> logger)
     {
         _context = context;
         _logger = logger;
     }
 
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<BottleRating>>> GetBottleRatings()
+    public async Task<ActionResult<IEnumerable<BottleReview>>> GetBottleReviews()
     {
-        return await _context.BottleRatings.ToListAsync();
+        return await _context.BottleReviews.ToListAsync();
     }
 
     [HttpGet("{bottleId}")]
-    public async Task<ActionResult<IEnumerable<BottleRating>>> GetBottleRatings(long bottleId)
+    public async Task<ActionResult<IEnumerable<BottleReview>>> GetBottleReviews(long bottleId)
     {
-        return await _context.BottleRatings
+        return await _context.BottleReviews
             .Include(br => br.Bottle)
             .Where(br => br.BottleId == bottleId)
             .ToListAsync();
     }
 
     [HttpPost]
-    public async Task<ActionResult> PostBottleRating([FromBody]BottleRatingDTO bottleRatingDTO) {
+    public async Task<ActionResult> PostBottleReview([FromBody]BottleReviewDTO bottleReviewDTO) {
         if (!ModelState.IsValid) {
             return BadRequest(ModelState);
         }
 
-        var bottleExists = await _context.Bottles.AnyAsync(b => b.Id == bottleRatingDTO.BottleId);
+        var bottleExists = await _context.Bottles.AnyAsync(b => b.Id == bottleReviewDTO.BottleId);
         if (!bottleExists) {
             ModelState.AddModelError("BottleId", "No bottle has the id provided as BottleId");
             return BadRequest(ModelState);
         }
 
-        var bottleRating = new BottleRating {
-            FizzLevel = bottleRatingDTO.FizzLevel,
-            FunkLevel = bottleRatingDTO.FunkLevel,
-            TasteLevel = bottleRatingDTO.TasteLevel,
-            Description = bottleRatingDTO.Description,
-            OverAllRating = bottleRatingDTO.OverAllRating,
-            BottleId = bottleRatingDTO.BottleId
+        var bottleReview = new BottleReview {
+            FizzLevel = bottleReviewDTO.FizzLevel,
+            FunkLevel = bottleReviewDTO.FunkLevel,
+            TasteLevel = bottleReviewDTO.TasteLevel,
+            Description = bottleReviewDTO.Description,
+            OverAllRating = bottleReviewDTO.OverAllRating,
+            BottleId = bottleReviewDTO.BottleId
         };
 
-        _context.BottleRatings.Add(bottleRating);
+        _context.BottleReviews.Add(bottleReview);
         await _context.SaveChangesAsync();
 
 
-        return Ok(new { Message = "Bottle rating is submitted" });
+        return Ok(new { Message = "Bottle review is submitted" });
     }
 }

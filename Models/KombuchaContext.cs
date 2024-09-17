@@ -12,7 +12,7 @@ public class KombuchaContext : DbContext {
 
     public DbSet<Batch> Batches { get; set; } = null!;
     public DbSet<Bottle> Bottles { get; set; } = null!;
-    public DbSet<BottleRating> BottleRatings { get; set; } = null!;
+    public DbSet<BottleReview> BottleReviews { get; set; } = null!;
     public DbSet<Ingredient> Ingredients { get; set; } = null!;
     public DbSet<Sugar> Sugars { get; set; } = null!;
     public DbSet<Tea> Teas { get; set; } = null!;
@@ -26,7 +26,7 @@ public class KombuchaContext : DbContext {
         modelBuilder.Entity<Bottle>()
             .HasOne(b => b.Batch);
 
-        modelBuilder.Entity<BottleRating>()
+        modelBuilder.Entity<BottleReview>()
             .HasOne(br => br.Bottle)
             .WithMany()
             .HasForeignKey(br => br.BottleId);
