@@ -45,12 +45,12 @@ public class BottleReviewController : ControllerBase
         }
 
         var bottleReview = new BottleReview {
+            BottleId = bottleReviewDTO.BottleId,
             FizzLevel = bottleReviewDTO.FizzLevel,
             FunkLevel = bottleReviewDTO.FunkLevel,
             TasteLevel = bottleReviewDTO.TasteLevel,
             Description = bottleReviewDTO.Description,
-            OverAllRating = bottleReviewDTO.OverAllRating,
-            BottleId = bottleReviewDTO.BottleId
+            OverAllRating = bottleReviewDTO.OverAllRating
         };
 
         _context.BottleReviews.Add(bottleReview);

@@ -6,6 +6,7 @@ public class Bottle {
     public int? DaysOfFermentation { get; set; }
     public ICollection<BottleIngredient> BottleIngredients { get; set; } = new List<BottleIngredient>();
     public string? Description { get; set; }
+    public string? PhysicalBottleName { get; set; }
 
     public long BatchId { get; set; }
     public virtual Batch Batch { get; set; }
